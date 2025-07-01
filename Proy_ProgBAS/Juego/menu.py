@@ -14,7 +14,7 @@ dblue=(0,0,204)
 
 #Cargando imagen de fondo
 
-bg=pygame.image.load("assets/Imagenes/menubg.jpg").convert()
+bg=pygame.image.load("../assets/Imagenes/menubg.jpg").convert()
 bg=pygame.transform.scale(bg,(1280,720))
 
 clock=pygame.time.Clock()
@@ -27,6 +27,8 @@ while True:
         if event.type==pygame.MOUSEBUTTONDOWN:
             if salir.collidepoint(event.pos):
                 sys.exit()
+            elif jugar.collidepoint(event.pos):
+                import main
         
         
         

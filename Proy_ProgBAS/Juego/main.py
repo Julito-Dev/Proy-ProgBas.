@@ -5,10 +5,10 @@ tamaño=1280,720
 ventana = pygame.display.set_mode(tamaño)
 
 clock=pygame.time.Clock()
-fondo=pygame.image.load("assets/Imagenes/espacio.jpg").convert()
+fondo=pygame.image.load("../assets/Imagenes/espacio.jpg").convert()
 
 #JUGADOR
-nave=pygame.image.load("assets/Imagenes/nave.png").convert()
+nave=pygame.image.load("../assets/Imagenes/nave.png").convert()
 nave=pygame.transform.scale(nave,(64,64))   
 nave.set_colorkey([0,0,0])
 x=640
@@ -17,14 +17,14 @@ x_s=0
 y_s=0
 
 #DISPARO
-laser=pygame.image.load("assets/Imagenes/laser.png").convert_alpha()
+laser=pygame.image.load("../assets/Imagenes/laser.png").convert_alpha()
 laser=pygame.transform.scale(laser,(10,20))
 balas=[]
 balas_borrar=[]
 laser_speed=10
 
 #METEOROS
-meteoros=pygame.image.load("assets/Imagenes/meteoro.png").convert()
+meteoros=pygame.image.load("../assets/Imagenes/meteoro.png").convert()
 meteoros=pygame.transform.scale(meteoros,(65,65))
 def generar_meteoros():
     borde=random.choice(["arriba","abajo","derecha","izquierda"])
@@ -54,7 +54,7 @@ def generar_meteoros():
             
 
 #SONIDOS
-sonido=pygame.mixer.Sound("assets/sonidos/laser5.ogg")
+sonido=pygame.mixer.Sound("../assets/sonidos/laser5.ogg")
 
 #AJUSTE DEL TIEMPO
 ultimo_spawn=0
@@ -63,6 +63,7 @@ meteoritos=[]
 #ESTADO DEL JEUGO
 muerto=False
 pausa=False
+puntaje=0
 while True:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -115,7 +116,7 @@ while True:
             muerto=True
             if muerto:
                 fuente = pygame.font.SysFont(None, 80)
-                texto = fuente.render("¡Perdiste!", True, (255, 255, 255))
+                texto = fuente.render(f"¡Perdiste!", True, (255, 255, 255))
                 ventana.blit(texto, (tamaño[0]//2 - 150, tamaño[1]//2 - 40))
 
     
@@ -137,6 +138,7 @@ while True:
                 if rect_bala.colliderect(rect_m):
                     balas_borrar.append(bala)
                     meteoritos.remove(m)
+                    puntaje+=1
                 
             if bala not in balas_borrar:
                 if bala in balas:
