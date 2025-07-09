@@ -3,6 +3,86 @@ import pygame,sys,random
 pygame.init()
 tamaño=1280,720
 ventana = pygame.display.set_mode(tamaño)
+
+def ordenar_puntajes():
+    try:
+        archivo=open("puntajes.txt","rt")
+        puntajes = []
+        for linea in archivo:
+            linea = linea.strip().split()
+            if linea:  
+                puntajes.append((linea))  
+        puntajes=sorted(puntajes, key=lambda x: int(x[1]), reverse=True)  
+            
+        archivo.close()
+        archivo = open("puntajes.txt", "w")
+        for i in range(len(puntajes)):
+            for j in range(len(puntajes[i])):
+                puntaje=puntajes[i][j]
+                archivo.write(puntaje + " ")
+                if j == 8:
+                    archivo.write("\n")
+        archivo.close()
+    except FileNotFoundError:
+        pass
+#VENTANA PUNTAJES
+def puntajes():
+    black=(0,0,0)
+    white=(255,255,255)
+    red=(255,0,0)
+    blue=(0,0,255)
+    green=(0,255,0)
+    dblue=(0,0,204)
+    
+    #Cargando imagen de fondo
+
+    bg=pygame.image.load("assets/Imagenes/menubg.jpg").convert()
+    bg=pygame.transform.scale(bg,(1280,720))
+
+    clock=pygame.time.Clock()
+
+    
+    volver=pygame.Rect(540,650,200,60) 
+    
+    puntajes_lista=[]
+    
+    ordenar_puntajes() #ORDENA DE MAYOR A MENOR
+    try:
+        with open("puntajes.txt","r") as archivo:
+            puntajes_lista=[linea.strip() for linea in archivo if linea.strip()]
+        puntajes_lista=puntajes_lista[-15:]
+    except FileNotFoundError:
+        puntajes_lista=["No hay puntajes aún."]
+        
+    tipo_letra= pygame.font.SysFont(None,35)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                sys.exit()
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                if volver.collidepoint(event.pos):
+                    menu()
+        
+        ventana.blit(bg,(0,0))
+        
+        #Boton volver
+    
+        pygame.draw.rect(ventana,dblue,volver)
+        fuente=pygame.font.SysFont(None,50)
+        texto=fuente.render("Volver",True,(white))
+        ventana.blit(texto,(volver.x+50,volver.y+15))
+        
+        #MOSTRAR LAS LINEAS DEL PUNTAJEa
+        y=100
+        for linea in puntajes_lista:
+            texto=tipo_letra.render(linea,True,white)
+            ventana.blit(texto,(325,y))
+            y += 35
+
+        pygame.display.flip()
+        clock.tick(60)
+
 def menu():
     black=(0,0,0)
     white=(255,255,255)
@@ -20,7 +100,7 @@ def menu():
 
 
     jugar=pygame.Rect(540,300,200,60)
-    opciones=pygame.Rect(540,370,200,60)
+    puntuaciones=pygame.Rect(540,370,200,60)
     salir=pygame.Rect(540,440,200,60) 
     
     while True:
@@ -33,7 +113,9 @@ def menu():
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if jugar.collidepoint(event.pos):
                     juego()
-            
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                if puntuaciones.collidepoint(event.pos):
+                    puntajes()
             
             
         ventana.blit(bg,(0,0))
@@ -45,12 +127,12 @@ def menu():
         texto= fuente.render("JUGAR",True,(white))
         ventana.blit(texto,(jugar.x+45,jugar.y+18))
         
-        #BOTON OPCIONES
+        #BOTON PUNTUACION
       
-        pygame.draw.rect(ventana,dblue,opciones)
+        pygame.draw.rect(ventana,dblue,puntuaciones)
         fuente=pygame.font.SysFont(None,40)
         texto=fuente.render("Puntuaciones",True,(white))
-        ventana.blit(texto,(opciones.x+10,opciones.y+13))
+        ventana.blit(texto,(puntuaciones.x+10,puntuaciones.y+13))
         
         #Boton SALIR
     
